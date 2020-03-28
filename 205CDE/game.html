@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--- Main HTML Structure--->
+<!-- html -> head -> body -->
+<head>
+	<meta charset="UTF-8">
+	<!--Browser Tab title-->
+	<title>205CDE Individual Assignment</title>
+
+</head>
+<body class = "background" onload="displayImagesControl(true)"> 
+	<header class="banner">
+		<!--Website header-->
+		<h1>205CDE</h1>
+		<h2>Developing Modern Web</h2>
+	</header>
+	<!-- Navigation Bar-->
+	<nav>
+		<ul>  
+			<li><a href="index.html">Introduction</a></li>
+			<li><a href="game.html">Game</a></li>
+		</ul>
+	</nav>
+	<main>
+		<!-- Section -> Article -> Header -> Paragraph -->
+		<section1>
+			<h2> Paper-Scissor-Rock game</h2>
+			<article>
+				<header>
+					<h3>Play against the computer, See If you have any luck! </h3>
+					<p>(CityU Scope ITB, March 2020)</p>
+				</header>
+				
+				<!-- Display rock, paper, scissor images slide-->
+				<!-- Link to displayimages()-->
+				<div id="moves">
+				<img id="image" src="photo.jpg" class = "slide" width="400" height="250">
+				</div>
+			</article>
+		</section1>
+
+		<section2>
+			<!-- <debug>
+				<h1>Debug area</h1>
+				<p id="debug"></p>
+			</debug> -->
+			<div class = "score">	
+			<div><p>Computer</p></div>
+			<p>    </p>
+			<!-- Link to showName()-->
+			<span id="displayname"> You </span>
+			</div>
+			<!-- Score Board, links to markcal() -->
+			<div class = "score">	
+				<div 1><p id="computer-score"> 0 </p></div 1>
+					<div 2> <p>:</p></div 2>
+						<div 3> <p id="player-score">0</p></div 3>
+			</div>
+			<h3 id="result" style="text-align: center; text-shadow: aquamarine; background-color: #09e2ff;"> </h3>			
+		</section2>
+		<br>
+	</main>
+
+	<!--Right column of the main content-->
+	<aside>
+		<!-- Name input for gaming-->
+		<h2>Enter your name to play:</h2>
+		<div class="container"> 
+			<br> <br>
+            <label><b>Type your name: </b></label> 
+			<!-- <input type="text" placeholder="Enter Username" name="uname" required> -->
+			<form>
+				<!-- Pass name to JS -->
+				<input type= "text" id="name" placeholder="Enter Username" name="name">
+				<!-- Button link to myScript.js-->
+				<input type = "button" onclick="showName()" value="Play !!"> 
+			</form>
+			<br> <br>
+			<button type="image" onclick='battle("paper")'><img src = "http://dtgroups.ddns.net/dthrms/wp-content/uploads/2020/03/paper.png"  width = "60" height = "60"></button>
+			<button type="image" onclick='battle("scissor")'><img src = "http://dtgroups.ddns.net/dthrms/wp-content/uploads/2020/03/scissor.png"  width = "60" height = "60"></button>
+			<button type="image" onclick='battle("rock")'><img src = "http://dtgroups.ddns.net/dthrms/wp-content/uploads/2020/03/rock.png"  width = "60" height = "60"></button>
+			<br> <br>
+			<button class="glow-on-hover" type="button" onclick="displayImagesControl(true)"> Play Again </button>
+		</div>
+	</aside>
+
+	<!--Footer, end of the main content-->
+	<footer>
+		<p>&copy; Copyright 2020 205CDE</p>
+	</footer>
+
+	<!-- Javascript coding -->
+	<script>
+		var playerScore = document.getElementById("player-score").innerHTML;
+		var compScore = document.getElementById("computer-score").innerHTML;
+		var currentPos = 0;
+		var comChoice = "None";
+		//Image source 
+		var images = ["http://dtgroups.ddns.net/dthrms/wp-content/uploads/2020/03/paper.png", 				 
+					  "http://dtgroups.ddns.net/dthrms/wp-content/uploads/2020/03/scissor.png",
+					  "http://dtgroups.ddns.net/dthrms/wp-content/uploads/2020/03/rock.png"]
+		
+		//Sequence algorithm 
+		//0,1,2 continuously 
+		function displayImages() {
+			if (++currentPos >= images.length)
+				currentPos = 0;
+			image.src = images[currentPos];
+			if (currentPos == 0)
+				comChoice = "paper"
+			else if (currentPos == 1)
+				comChoice = "scissor"
+			else
+				comChoice = "rock"
+		}
+		
+		function displayImagesControl(flag) {
+    		if (flag) {
+        		change = setInterval(displayImages, 100);
+    			} else {
+					clearInterval(change);
+					markCal(comChoice, "computer");
+    			}
+		}
+
+		//Game core function
+		function battle(cmove){
+			var exist = document.getElementById("player-image");
+			displayImagesControl(false);
+			//alert("Entered Battlefield");
+			choices = ["paper","scissor","rock"]
+			if (exist != null) {
+				for(var a=0; a<choices.length;a++){
+					if(cmove == choices[a]){
+						exist.src="http://dtgroups.ddns.net/dthrms/wp-content/uploads/2020/03/"+choices[a]+".png";
+					}
+				}
+			}
+			else{
+				//Display user's selected move
+				for(var a=0; a<choices.length;a++){
+					if(cmove == choices[a]){
+						var img = document.createElement("img"); //declaration 
+						img.id = "player-image";
+						img.src="http://dtgroups.ddns.net/dthrms/wp-content/uploads/2020/03/"+choices[a]+".png";
+						document.getElementById("moves").appendChild(img);
+					}
+				}
+			}		
+			//Go to calculate win loose and marks 
+			markCal(cmove)	
+		}
+
+		function markCal(cmove) {
+			if ((comChoice == "scissor") && (cmove == "rock"))
+				youwin();
+
+			else if ((comChoice == "paper") && (cmove == "scissor"))
+				youwin();
+
+			if ((comChoice == "rock") && (cmove == "paper"))
+				youwin();
+
+			if ((comChoice == "paper") && (cmove == "rock"))
+				youfail();
+
+			if ((comChoice == "rock") && (cmove == "scissor"))
+				youfail();
+
+			if ((comChoice == "scissor") && (cmove == "paper"))
+				youfail();
+
+			if (cmove == comChoice)
+				draw();
+		}
+
+		function youfail() {
+			compScore++;
+   			document.getElementById("result").innerHTML = "You lose!";
+    		document.getElementById("computer-score").innerHTML = compScore;
+			
+		}
+
+		function youwin() {
+			playerScore++;
+			document.getElementById("player-score").innerHTML = playerScore;
+			document.getElementById("result").innerHTML = "You win!";
+		}
+
+		function draw() {
+			document.getElementById("result").innerHTML = "You are as smart as the computer !";
+		}
+
+		//Display player name
+		function showName(e){
+			var Username= document.getElementById("name").value; //Catch name 
+			document.getElementById("displayname").innerText = Username;  //Display Name
+		}		
+	</script>
+
+	<!-- Linkage to javascript-->
+	<!-- Not necessary-->
+	<script src='myScript.js'>
+	</script>
+</body>
+
+<!-- CSS Style -->
+<style>
+article, aside, footer, header, main, nav, section1, section2 {
+	display: block;
+}
+
+html, body, h1, h2, h3, ul, li, a, p
+article, aside, footer, header, main, nav, section1, section2 {
+	padding: 0;
+	margin: 0;
+	border-radius: 8px;
+}
+
+.glow-on-hover {
+    width: 220px;
+    height: 50px;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #111;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 10px;
+}
+
+.glow-on-hover:before {
+    content: '';
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    position: absolute;
+    top: -2px;
+    left:-2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing 20s linear infinite;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+}
+
+.glow-on-hover:active {
+    color: #000
+}
+
+.glow-on-hover:active:after {
+    background: transparent;
+}
+
+.glow-on-hover:hover:before {
+    opacity: 1;
+}
+
+.glow-on-hover:after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgb(109, 0, 143);
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+@keyframes glowing {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
+}
+
+.background{
+	background-image: url("http://dtgroups.ddns.net/dthrms/wp-content/uploads/2020/03/sea-edge-79ab30e2.png");
+	background-repeat: no-repeat;
+	background-position: left center;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+  	-o-background-size: cover;
+  	background-size: cover;
+}
+
+.banner {
+	background-color: #11233b;
+	font-family: cursive;
+	color:white;
+	padding: 10px 20px;
+}
+
+.slide {
+	/* display: block; 
+  	margin-left: auto;
+  	margin-right: auto; */
+  	width: 30%;
+	display: flex;
+    justify-content: space-evenly;
+    padding: 10px 0 10px 0;
+}
+
+#moves {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 10px 0 10px 0;
+}
+
+.flex-choice {
+  display: flex;
+  background-color: lightblue;
+}
+
+.flex-choice > div {
+  background-color: #f1f1f1;
+  margin: 10px;
+  padding: 20px;
+  font-size: 30px;
+}
+
+.score {
+    color:black;
+    height: 20vh;
+    display: flex;
+    justify-content: space-around;
+	align-items: center;
+	font-size: xx-large;
+  }
+
+body {
+	width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #f0f0f0;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size:  15px;
+}
+
+nav {
+	background-color: #20416c;
+	padding: 5px;
+  	margin-top: 1px;
+}
+
+article, header{
+	background-color: lightskyblue;
+}
+
+
+li a {
+	color: lightsalmon;
+}
+
+li {
+	display: inline;
+	margin-left: 15px;
+	margin-right: 15px;
+	font-size: 20px;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+
+section1, section2{
+	background-color: lightseagreen;
+	margin-top: 10px;
+	padding: 20px;
+	font: small-caps bold 18px/1 sans-serif;
+}
+
+article {
+	background-color: rgb(255, 254, 254);
+	margin-top: 5px;
+	padding: 10px 15px;
+}
+
+main {
+  width: 640px;
+  float:left;
+  margin-bottom: 10px;
+}
+
+aside {
+	background-color: #009edd;
+	width:270px;
+	float: right;
+	padding: 20px;
+	margin-top: 10px;
+}
+
+footer {
+	clear: both;
+	background-color: #20416c;
+	color: white;
+	padding: 5px 20px;
+}
+	</style>
+</html>
